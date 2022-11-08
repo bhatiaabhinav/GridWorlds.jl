@@ -1,0 +1,8 @@
+name = "GridWorlds"
+uuid = "e7505120-62c1-45af-93d3-21d5e02f2e78"
+authors = ["Abhinav Bhatia <abhinav.bhatia.me@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+MDPs = "11f886ef-95cd-43ae-b218-d50c093ca059"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
