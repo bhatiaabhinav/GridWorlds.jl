@@ -1,6 +1,6 @@
 using MDPs
 using StaticArrays
-import MDPs: state_space, action_space, discount_factor, horizon, action_meaning, start_state_support, start_state_probability, transition_support, transition_probability, reward, is_absorbing
+import MDPs: state_space, action_space, action_meaning, start_state_support, start_state_probability, transition_support, transition_probability, reward, is_absorbing
 
 export GridWorld
 
@@ -71,8 +71,6 @@ end
 state_space(gp::GridWorld) = IntegerSpace(length(gp.grid))
 action_space(gp::GridWorld) = IntegerSpace(5)
 action_meaning(gp::GridWorld, a::Int) = GRID_WORLD_ACTION_MEANINGS[a]
-discount_factor(gw::GridWorld) = 0.99
-horizon(::GridWorld) = typemax(Int)
 
 @inline nrows(gw::GridWorld) = size(gw.grid, 1)
 @inline ncols(gw::GridWorld) = size(gw.grid, 2)
