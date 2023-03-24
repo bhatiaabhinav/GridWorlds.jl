@@ -38,9 +38,13 @@ function visualize(gw::GridWorld, s::Int, a::Union{Nothing, Int}=nothing, rew::U
 
         if !isnothing(value_fn)
             v = value_fn isa Dict ? get(value_fn, T[r/R, c/C], 0) : value_fn[i]
+            vround = round(v; sigdigits=2)
             color = RGBA(v < 0, v > 0, 0, min(abs(v) / vmax, 1))
             setcolor(color)
             rect(SCALE * (x - 1), SCALE * (y - 1), SCALE, SCALE, :fill)
+            setcolor("black")
+            fontsize(0.15 * SCALE)
+            text("$vround", Point(SCALE * (x - 0.5), SCALE * (y - 0.5)), halign=:center, valign=:middle)
         end
 
         setcolor("black")
