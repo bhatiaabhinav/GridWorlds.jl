@@ -7,7 +7,7 @@ drawcolors=Dict('O' => "black", 'C' => "red")
 drawtext=Dict('O' => "", 'C' => "")
 action_draw_text = ["□", "↑", "→", "↓", "←"]
 
-function visualize(gw::GridWorld, s::Int, a::Union{Nothing, Int}=nothing, rew::Union{Nothing, Int}=nothing, args...; value_fn::Union{Nothing, Dict{Vector{T}, <:Real}, Vector{<:Real}} = nothing, vmax::Real=1, filename::Union{Nothing, String}=nothing, kwargs...)::Matrix{ARGB32} where T
+function visualize(gw::GridWorld, s::Int, a::Union{Nothing, Int}=nothing, rew::Union{Nothing, Int}=nothing, args...; value_fn::Union{Nothing, Dict{Vector{T}, <:Real}, Vector{<:Real}} = nothing, vmax::Real=1, filename::Union{Nothing, String}=nothing, show_action=true, kwargs...)::Matrix{ARGB32} where T
     if isnothing(a)
         a = max(gw.action, 1)
     end
@@ -18,8 +18,12 @@ function visualize(gw::GridWorld, s::Int, a::Union{Nothing, Int}=nothing, rew::U
 
     R, C = size(g)
 
-    SCALE = 600 ÷ max(R + 1, C)
-    W, H = SCALE * C, SCALE * (R + 1)
+    SCALE = 1000 ÷ max(R + 1, C)
+    if show_action
+        W, H = SCALE * C, SCALE * (R + 1)
+    else
+        W, H = SCALE * C, SCALE * R
+    end
     W = W % 2 != 0 ? W + 1 : W
     H = H % 2 != 0 ? H + 1 : H
 
@@ -38,13 +42,18 @@ function visualize(gw::GridWorld, s::Int, a::Union{Nothing, Int}=nothing, rew::U
 
         if !isnothing(value_fn)
             v = value_fn isa Dict ? get(value_fn, T[r/R, c/C], 0) : value_fn[i]
-            vround = round(v; sigdigits=2)
-            color = RGBA(v < 0, v > 0, 0, min(abs(v) / vmax, 1))
-            setcolor(color)
-            rect(SCALE * (x - 1), SCALE * (y - 1), SCALE, SCALE, :fill)
-            setcolor("black")
-            fontsize(0.15 * SCALE)
-            text("$vround", Point(SCALE * (x - 0.5), SCALE * (y - 0.5)), halign=:center, valign=:middle)
+            higest_v = maximum(values(value_fn))
+            # if higest_v > 99
+                if abs(v) > 0.5
+                    vround = round(v; sigdigits=2)
+                    color = RGBA(v < 0, v > 0, 0, min(abs(v) / vmax, 1))
+                    setcolor(color)
+                    rect(SCALE * (x - 1), SCALE * (y - 1), SCALE, SCALE, :fill)
+                    setcolor("black")
+                    fontsize(0.3 * SCALE)
+                    text("$vround", Point(SCALE * (x - 0.5), SCALE * (y - 0.5)), halign=:center, valign=:middle)
+                end
+            # end
         end
 
         setcolor("black")
@@ -71,11 +80,13 @@ function visualize(gw::GridWorld, s::Int, a::Union{Nothing, Int}=nothing, rew::U
     setline(SCALE / 10)
     rect(0, R * SCALE, C * SCALE, SCALE, :fill)
 
-    setcolor("black")
-    fontsize(0.5 * SCALE)
-    str = "Action: $(action_draw_text[a])   Reward: $(round(rew; sigdigits=2))"
-    th = textextents(str)[4]
-    text(str, Point(C * SCALE / 2, (R + 0.5) * SCALE - th/2), halign=:center, valign=:top)
+    if show_action
+        setcolor("black")
+        fontsize(0.5 * SCALE)
+        str = "Action: $(action_draw_text[a])   Reward: $(round(rew; sigdigits=2))"
+        th = textextents(str)[4]
+        text(str, Point(C * SCALE / 2, (R + 0.5) * SCALE - th/2), halign=:center, valign=:top)
+    end
 
     img = image_as_matrix()
 
@@ -87,6 +98,6 @@ end
 
 function visualize(gw::GridWorldContinuous{T}, s::Vector{T}, args...; kwargs...) where T
     r, c = s .* size(gw.gw.grid)
-    s = iindex(gw.gw, (Int(r), Int(c)))
+    s = iindex(gw.gw, (Int(round(r)), Int(round(c))))
     visualize(gw.gw, s, args...; kwargs...)
 end
