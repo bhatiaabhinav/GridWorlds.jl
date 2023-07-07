@@ -1,5 +1,4 @@
 using MDPs
-using StaticArrays
 import MDPs: state_space, action_space, action_meaning, start_state_support, start_state_probability, transition_support, transition_probability, reward, is_absorbing
 
 export GridWorld
@@ -37,7 +36,7 @@ mutable struct GridWorld <: AbstractMDP{Int, Int}
         T = Array{Float64}(undef, length(grid), 5, length(grid))
         R = Array{Float64}(undef, length(grid), 5, length(grid))
         for s in 1:length(state_space(gw))
-            tile = grid[s]
+            tile::Char = grid[s]
             if !haskey(enter_rewards, tile)
                 enter_rewards[tile] = 0
             end

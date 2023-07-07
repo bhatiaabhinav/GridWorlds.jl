@@ -1,10 +1,9 @@
 name = "GridWorlds"
 uuid = "e7505120-62c1-45af-93d3-21d5e02f2e78"
 authors = ["Abhinav Bhatia <abhinav.bhatia.me@gmail.com>"]
-version = "0.4.1"
+version = "0.5.0"
 
 [deps]
 Luxor = "ae8d54c2-7ccd-5906-9d76-62fc9837b5bc"
 MDPs = "11f886ef-95cd-43ae-b218-d50c093ca059"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"

@@ -7,7 +7,7 @@ drawcolors=Dict('O' => "black", 'C' => "red")
 drawtext=Dict('O' => "", 'C' => "")
 action_draw_text = ["□", "↑", "→", "↓", "←"]
 
-function visualize(gw::GridWorld, s::Int, a::Union{Nothing, Int}=nothing, rew::Union{Nothing, Int}=nothing, args...; value_fn::Union{Nothing, Dict{Vector{T}, <:Real}, Vector{<:Real}} = nothing, vmax::Real=1, filename::Union{Nothing, String}=nothing, show_action=true, kwargs...)::Matrix{ARGB32} where T
+function visualize(gw::GridWorld, s::Int; value_fn::Union{Nothing, Dict{Vector{T}, <:Real}, Vector{<:Real}} = nothing, vmax::Real=1, filename::Union{Nothing, String}=nothing, show_action=true, a::Union{Nothing, Int}=nothing, rew::Union{Nothing, Int}=nothing, kwargs...)::Matrix{ARGB32} where T
     if isnothing(a)
         a = max(gw.action, 1)
     end
@@ -96,8 +96,12 @@ function visualize(gw::GridWorld, s::Int, a::Union{Nothing, Int}=nothing, rew::U
 end
 
 
-function visualize(gw::GridWorldContinuous{T}, s::Vector{T}, args...; kwargs...) where T
-    r, c = s .* size(gw.gw.grid)
+function visualize(gw::GridWorldContinuous{T}, s::Vector{T}; kwargs...) where T
+    if gw.include_tile_type
+        r, c = s[1:2] .* size(gw.gw.grid)
+    else
+        r, c = s .* size(gw.gw.grid)
+    end
     s = iindex(gw.gw, (Int(round(r)), Int(round(c))))
-    visualize(gw.gw, s, args...; kwargs...)
+    visualize(gw.gw, s; kwargs...)
 end
