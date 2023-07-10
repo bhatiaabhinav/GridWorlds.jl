@@ -94,14 +94,3 @@ function visualize(gw::GridWorld, s::Int; value_fn::Union{Nothing, Dict{Vector{T
 
     return img
 end
-
-
-function visualize(gw::GridWorldContinuous{T}, s::Vector{T}; kwargs...) where T
-    if gw.include_tile_type
-        r, c = s[1:2] .* size(gw.gw.grid)
-    else
-        r, c = s .* size(gw.gw.grid)
-    end
-    s = iindex(gw.gw, (Int(round(r)), Int(round(c))))
-    visualize(gw.gw, s; kwargs...)
-end
