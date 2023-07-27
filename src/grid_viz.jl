@@ -7,7 +7,7 @@ drawcolors=Dict('O' => "black", 'C' => "red")
 drawtext=Dict('O' => "", 'C' => "")
 action_draw_text = ["□", "↑", "→", "↓", "←"]
 
-function visualize(gw::GridWorld, s::Int; value_fn::Union{Nothing, Dict{Vector{T}, <:Real}, Vector{<:Real}} = nothing, vmax::Real=1, filename::Union{Nothing, String}=nothing, show_action=true, a::Union{Nothing, Int}=nothing, rew::Union{Nothing, Int}=nothing, kwargs...)::Matrix{ARGB32} where T
+function visualize(gw::GridWorld, s::Int; value_fn::Union{Nothing, Dict{Vector{T}, <:Real}, Vector{<:Real}} = nothing, vmax::Real=1, filename::Union{Nothing, String}=nothing, show_action=true, a::Union{Nothing, Int}=nothing, rew::Union{Nothing, Int}=nothing, image_scale::Int=400, kwargs...)::Matrix{ARGB32} where T
     if isnothing(a)
         a = max(gw.action, 1)
     end
@@ -18,7 +18,7 @@ function visualize(gw::GridWorld, s::Int; value_fn::Union{Nothing, Dict{Vector{T
 
     R, C = size(g)
 
-    SCALE = 1000 ÷ max(R + 1, C)
+    SCALE = image_scale ÷ max(R + 1, C)
     if show_action
         W, H = SCALE * C, SCALE * (R + 1)
     else
@@ -90,7 +90,7 @@ function visualize(gw::GridWorld, s::Int; value_fn::Union{Nothing, Dict{Vector{T
 
     img = image_as_matrix()
 
-    !isnothing(filename) && finish()
+    finish()
 
     return img
 end
